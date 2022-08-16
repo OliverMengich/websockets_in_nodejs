@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Javascript - Chatter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      form{
+        padding: 20px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding-right: 50px;
+      }
+      #messages{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #messages li{
+        padding: 5px 10px;
+      }
+      #messages li:nth-child(odd){
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <ul id="messages"></ul>
+      </div>
+      <div class="row">
+        <form action="">
+          <div class="input-group mb-3">
+            <input
+            id="m"
+              type="text"
+              class="form-control"
+              placeholder="Recipient's username"
+              aria-label="Recipient's username"
+              aria-describedby="button-addon2"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="submit"
+              id="button-addon2"
+            >
+              Button
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const room = 'javascript';
+      const socket = io('/tech');
+      $('form').submit(()=>{
+        let msg = $('#m').val();
+         socket.emit('message', {msg, room });
+         $('#m').val('');
+         return false;
+      });
+      socket.on('connect',()=>{
+        //emitting to event
+        socket.emit('join',{room: room});
+      })
+      socket.on('message',(msg)=>{
+        $('#messages').append($('<li>').text(msg));
+      })
+      // socket.on("message", (data) => {
+      //   console.log(data);
+      //   socket.emit("another event", { jeremy: "I am great thnak you" });
+      // });
+    </script>
+  </body>
+</html>
